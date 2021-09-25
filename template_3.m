@@ -4,16 +4,16 @@
 % Формирование сигнала
 f_d = 1e9;              % частота дискретизации, Гц
 t_d = 1/f_d;            % период дискретизации
-t_win = 2e-7;     % длительность рассматриваемого интервала
-t_ch = 8e-9;        % длительность импульса (t chirp)
-f_car = 140e6;            % частота несущей, Гц
+t_win = 2e-7;           % длительность рассматриваемого интервала
+t_ch = 8e-9;            % длительность импульса (t chirp)
+f_car = 140e6;          % частота несущей, Гц
 f_mod = 5e6; i_mod = 0.5;   % параметры модуляции (частота,
 % Формирование сигналов
 s_v = generate_single_chirp('video', t_d, t_win, t_ch);                 % в/импульс
 s_r = generate_single_chirp('radio', t_d, t_win, t_ch, f_car);          % р/импульс
 s_am = generate_single_chirp('AM', t_d, t_win, f_car, f_mod, i_mod);    % АМ сигнал
 % Отображение данных
-signal = circshift(s_v,floor(length(s_r)/2));              % выбрать сигнал для отображения
+signal = circshift(s_v,floor(length(s_r)/2));   % выбрать сигнал для отображения
 plot_signal(t_d,signal)     % отобразить сигнал
 plot_spectum(t_d,signal);   % отобразить спектр сигнала
 %% Сравнение фильтров
