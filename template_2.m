@@ -33,7 +33,7 @@ grid on; hold on;
 plot(shift_axis_us,rout);
 plot(shift_axis_us,anal_corr_fun);
 legend('усредненная КФ','')
-xlabel('\tau'); ylabel('R(\tau');
+xlabel('Tau'); ylabel('R(Tau');
 
 %% Фильтр, обеспечивающий корреляцию отсчетов
 function [f] = corr_filter(Z,rL_us,corr_us)
