@@ -39,7 +39,9 @@ xlabel('\tau'); ylabel('R(\tau)');
 function [f] = corr_filter(Z,rL_us,corr_us)
     [~, signal_length] = size(Z);                   % определение 
     x = linspace(-rL_us/2,rL_us/2,signal_length);   % пересчет отсчетов во время
-    F = exp(-abs(x)/(corr_us/2));                   % целевая корреляционная функция
-    f = real(sqrt(2)*ifft(fft(Z,signal_length,2).*sqrt(fft(F,signal_length,2)),signal_length,2)); % результат преобразования
+    f = exp(-abs(x)/(corr_us/2));                   % целевая корреляционная функция
+    F = sqrt(fft(f,signal_length,2));               % АЧХ фильтра
+    F = F/max(abs(F));  % нормировка АЧХ на максимальное значение: гармоники не должны училиваться
+    f = real(sqrt(2)*ifft(fft(Z,signal_length,2).*F,signal_length,2)); % перемножение спектра и АЧХ
 end
 
