@@ -1,7 +1,7 @@
 # %% Сформировать нормально распроеделенную СВ на основе равномерно распределенных СВ
 """
 В программе:
-1) загрузка дополнительных библиотек
+1) Загрузка дополнительных библиотек
 2) Инициализация параметров моделирования и распределений
 3) Формирование СВ с использованем встроенной функции
 4) Формировнаие СВ путём комбинирования Релеевской и арксинусной СВ
@@ -10,11 +10,17 @@
     - аналитически заданную ПВ
     - оценённую по СВ, полученной с использованием внутренней функции
     - оценённую по СВ, полученной на основании преобразований.
+
+Для вывода графиков в отдельное окно используйте
+>>> %matplotlib qt
 """
+# Загрузка дополнительных библиотек
 from scipy.stats import norm, uniform, expon
 import matplotlib.pyplot as plt
 import numpy as np
 
+#%%
+# Моделирование СВ
 # Параметры моделирования и распределения
 sigma_param = 12
 mu_param=7          
@@ -29,32 +35,37 @@ y_1 = (-2 * np.log(x_1)) ** (1/2)       # результат н.лин. прео
 y_2 = np.sin(2*np.pi*x_2)               # результат н.лин. преобразования - Арксинусная СВ
 y_custom = sigma_param * y_1 * y_2 + mu_param   # комбинирование для получения нормальной СВ
 
+#%% 
+# Вывод ПВ результирующей нормальной СВ
 # Аналитически заданная функция плотности вероятности
 n_edges = 20
-x = np.linspace(-3*sigma_param + mu_param, 3*sigma_param + mu_param,n_edges)
-w_analityc = norm.pdf(x,loc=mu_param,scale=sigma_param) # аналитическое значение СВ
+x_axis = np.linspace(-3*sigma_param + mu_param, 3*sigma_param + mu_param,n_edges)
+w_analityc = norm.pdf(x_axis,loc=mu_param,scale=sigma_param) # аналитическое значение СВ
 
-# Вывод ПВ результирующей нормальной СВ
-fig, ax = plt.subplots(1, 1,  num='normilized histogram normal function')
-ax.plot(x,w_analityc,'g-',label='аналитическая')
-ax.hist([y_lib,y_custom],density=True, bins=x, label = ['встроенная функция','преобразование'])
-ax.legend(loc='best', frameon=False)
-plt.title('нормальное распределение, m=' + str(mu_param) + ', sigma= ' + str(sigma_param))
+plt.figure()
+plt.subplot(211)
+plt.plot(x_axis,w_analityc,'g-',label='аналитическая')
+plt.hist([y_lib,y_custom],density=True, bins=x_axis, label = ['встроенная функция','преобразование'])
+plt.legend(loc='best', frameon=False)
+plt.title('Нормальное распределение, m=' + str(mu_param) + ', sigma= ' + str(sigma_param))
 plt.xlabel('y')
-plt.ylabel('W(y)',rotation='horizontal',loc='top')
+plt.ylabel('W(y)', rotation='horizontal')
 plt.show()
 
 # Вывод ПВ исходной равномерной СВ
+
 n_edges = 40
-x = np.linspace(-1, 2,n_edges)
-fig, ax = plt.subplots(1, 1,  num='normilized histogram original function')
-ax.hlines(1,0,1, color='r', label='analytic')
-ax.hist(x_1,density=True, bins=x, label='original uniform')
-ax.legend(loc='best', frameon=False)
-plt.title('гистограмма исходного процесса')
+x_axis = np.linspace(-1, 2,n_edges)
+w_analityc = ((x_axis>=0) & (x_axis<=1))*1
+plt.subplot(212)
+plt.hlines(1,0,1, color='r', label='аналитическая ПВ')
+plt.plot(x_axis,w_analityc,'g-',label='аналитическая')
+plt.hist(x_1,density=True, bins=x_axis, label='исходная СВ')
+plt.legend(loc='best', frameon=False)
+plt.title('Гистограмма исходного процесса')
 plt.xlabel('x')
 plt.xlim((-1,2))
-plt.ylabel('W(x)',rotation='horizontal',loc='top')
+plt.ylabel('W(x)', rotation='horizontal')
 plt.show()
 
 # %% 
