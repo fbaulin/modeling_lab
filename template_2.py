@@ -78,7 +78,8 @@ plt.plot(shift_axis_us, r_est, shift_axis_us, r_fun)
 plt.xlim(-3*corr_int_us, 3*corr_int_us)
 plt.title('КФ')
 plt.legend(('моделирование','аналитически заданная'))
-plt.xlabel(r'$\tau$'), plt.ylabel('W(x)', rotation='horizontal');
+plt.xlabel(r'$\tau$'), plt.ylabel(r'R($\tau$)', rotation='horizontal');
+plt.show()
 
 
 # %%
@@ -86,7 +87,6 @@ plt.xlabel(r'$\tau$'), plt.ylabel('W(x)', rotation='horizontal');
 # Проанализируйте распределение отсчётов СП до и после фильтра
 
 plt.figure()
-plt.subplot(211)
 plt.hist([x.flatten(),y.flatten()], bins=64, density=True, label = ['исх','результ'])
 plt.legend(loc='best', frameon=False)
 plt.title('Нормальное распределение, m=' + str(mu_param) + ', sigma= ' + str(sigma_param))
