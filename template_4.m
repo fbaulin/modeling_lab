@@ -1,14 +1,15 @@
-%% Задача - выполнить анализ сигнала с использованием спектрограмм и вейвлет-разложения
 % Исходные параметры
 f_d = 8e6;                          % частота дискретизации, Гц
 t_d = 1/f_d;                        % период дискретизации
-t_impulse = 4/5e-6;               % длительность импульса (t chip)
+t_impulse = 10e-6;                % длительность импульса (t chip)
 t_window = 80e-6;                % длительность рассматриваемого интервала
 f_carrier = 0.80e6;                  % частота несущей, Гц
 f_mod = 0.6e6; i_mod = 0.8; % параметры модуляции (частота, глубина)
-%% Формирование одиночных импульсов
-s_c = generate_single_chip('chirp', t_d, t_window, t_impulse, f_carrier, f_mod);    % ЛЧМ импульс
-% s_v = generate_single_chip('video', t_d, t_window, t_impulse);                      % в/импульс
+%% Работа №3 Моделирование фильтров
+% Задача - выполнить анализ сигнала с использованием спектрограмм и вейвлет-разложения
+% Формирование одиночных импульсов
+% s_c = generate_single_chip('chirp', t_d, t_window, t_impulse, f_carrier, f_mod);    % ЛЧМ импульс
+s_v = generate_single_chip('video', t_d, t_window, t_impulse);                      % в/импульс
 % s_r = generate_single_chip('radio', t_d, t_window, t_impulse, f_carrier);           % р/импульс
 % s_am = generate_single_chip('AM', t_d, t_window, f_carrier, f_mod, i_mod);          % АМ сигнал
 %% Отображение импульса
@@ -36,7 +37,7 @@ hndls = plot_spectum(t_d,signal_out);       % отобразить спектр (ф-я возвращает 
 legend(hndls(1),'ideal');
 legend(hndls(2),'butterworth');
 legend(hndls(3),'chebyshev');
-%% Частотно-временной анализ
+%% Работа №4 Частотно-временной анализ
 % Формирование последовательности отсчетов
 n_chips = 16;
 s_c = generate_sequence('chirp', t_d, n_chips, t_impulse, f_carrier);   % ЛЧМ импульс
@@ -93,7 +94,8 @@ function signal = generate_sequence(type,t_d, n_chips, t_imp, f_low)
 % Аргументы:
 %   type - тип сигнала
 %   t_d - интервал дискретизации
-%   n_chips - число отсетов
+%   n_chips - число импульсов
+%   t_imp - длительность одного импульса
 %   f_low - нижняя частота
     switch type     % запустить функцию формирования сигнала в зависимости от заданного типа
         case 'chirp'    % тип в/импульс

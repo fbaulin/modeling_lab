@@ -9,9 +9,9 @@ t_ch = 8e-9;            % длительность импульса (t chirp)
 f_car = 140e6;          % частота несущей, Гц
 f_mod = 5e6; i_mod = 0.5;   % параметры модуляции (частота,
 % Формирование сигналов
-s_v = generate_single_chirp('video', t_d, t_win, t_ch);                 % в/импульс
-s_r = generate_single_chirp('radio', t_d, t_win, t_ch, f_car);          % р/импульс
-s_am = generate_single_chirp('AM', t_d, t_win, f_car, f_mod, i_mod);    % АМ сигнал
+s_v = generate_single_chip('video', t_d, t_win, t_ch);                 % в/импульс
+s_r = generate_single_chip('radio', t_d, t_win, t_ch, f_car);          % р/импульс
+s_am = generate_single_chip('AM', t_d, t_win, f_car, f_mod, i_mod);    % АМ сигнал
 % Отображение данных
 signal = circshift(s_v,floor(length(s_r)/2));   % выбрать сигнал для отображения
 plot_signal(t_d,signal)     % отобразить сигнал
@@ -45,7 +45,7 @@ freqz(b, a, n_freq_resp, f_d)   % построение АЧХ и ФЧХ (можно вытащить отсчеты -
 
 %% Служебные функции общего назначение
 % Формирование сигналов (управляющая функция)
-function signal = generate_single_chirp(type,varargin)
+function signal = generate_single_chip(type,varargin)
     switch type     % запустить функцию формирования сигнала в зависимости от заданного типа
         case 'video'    % тип в/импульс
             signal = get_video_pulse(varargin{:});
