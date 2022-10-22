@@ -1,4 +1,22 @@
+# %% 
+# Лабораторная №4 
+"""
+В программе: 
+1) Загрузка дополнительных библиотек
+2) Генерация последовательности импульсов
+3) Вывод сигнала
+4) Вывод спектрограм
+    - с коротким окном
+    - с длинным окном и сдвигом окна на один отсчёт
+    - с длинным окном с шагом на величину окна
+5) Карты коэффициентов вейвлет-преобразования
+
+Для вывода графиков в отдельное окно используйте
+>>> %matplotlib qt
+"""
 # %%
+# Импорт и инициализация
+from matplotlib import pyplot as plt
 from toolbox import *
 
 # Задача - выполнить анализ сигнала с использованием спектрограмм и вейвлет-разложения
@@ -11,19 +29,21 @@ f_carrier = 0.80e6      # частота несущей, Гц
 f_mod = 0.6e6           
 i_mod = 0.8             # параметры модуляции (частота, глубина)
 n_chips = 8             
+# %%
 # Формирование последовательности отсчетов
 s_c = generate_sequence('chirp', t_d, n_chips, t_impulse, f_carrier);   # ЛЧМ импульс
 s_r = generate_sequence('radio', t_d, n_chips, t_impulse, f_carrier);   # р/импульс
 s_am = generate_sequence('AM', t_d, n_chips, t_impulse, f_carrier);     # АМ сигнал
-
-# %%
-# Анализ последовательности
 signal_out = s_r  # рез-татов фильтрации
 
-plot_signal([[t_d, signal_out]])
-window_opt_len = len(signal_out)//n_chips
+# %%
+# Синал во временной области
+plot_signal([[t_d, signal_out]])            # построение сигнала
+window_opt_len = 320
 plt.figure()
 
+# %%
+# Анализ спектрограмм 
 # Малый размер окна
 plt.subplot(311)
 powerSpectrum, freqenciesFound, time, imageAxis = plt.specgram(signal_out, 
@@ -44,9 +64,10 @@ plt.xlabel('Sample')
 plt.ylabel('Normalized Frequency')
 plt.show()
 
+# %%
+# Анализ карт коэффициентов вейвлет-преобразования (скейлограмм)
+cwtmatr, freqs = pywt.cwt(signal_out, np.arange(1,128), 'morl')
 plt.figure()
-cwtmatr, freqs = pywt.cwt(signal_out, np.arange(1,63), 'morl')
-plt.imshow(cwtmatr, extent=[-1, 1, 1, 63], cmap='PRGn', aspect='auto',
+plt.imshow(cwtmatr, extent=[-0, len(signal_out), 1, 128], aspect='auto',
            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())  
 plt.show() 
-
