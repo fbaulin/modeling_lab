@@ -1,9 +1,9 @@
 % Исходные параметры
-f_d = 8e6;                          % частота дискретизации, Гц
+f_d = 20e6;                          % частота дискретизации, Гц
 t_d = 1/f_d;                        % период дискретизации
-t_impulse = 10e-6;                % длительность импульса (t chip)
+t_impulse = 20e-6;                % длительность импульса (t chip)
 t_window = 80e-6;                % длительность рассматриваемого интервала
-f_carrier = 0.80e6;                  % частота несущей, Гц
+f_carrier = 1.80e6;                  % частота несущей, Гц
 f_mod = 0.6e6; i_mod = 0.8; % параметры модуляции (частота, глубина)
 %% Работа №3 Моделирование фильтров
 % Задача - выполнить анализ сигнала с использованием спектрограмм и вейвлет-разложения
@@ -13,7 +13,7 @@ s_v = generate_single_chip('video', t_d, t_window, t_impulse);                  
 % s_r = generate_single_chip('radio', t_d, t_window, t_impulse, f_carrier);           % р/импульс
 % s_am = generate_single_chip('AM', t_d, t_window, f_carrier, f_mod, i_mod);          % АМ сигнал
 %% Отображение импульса
-signal = circshift(s_c,floor(length(s_c)/2));  % выбрать сигнал для отображения
+signal = circshift(s_v,floor(length(s_v)/2));  % выбрать сигнал для отображения
 plot_signal(t_d,signal)     % отобразить сигнал
 plot_spectum(t_d,signal);   % отобразить спектр сигнала
 %% Сравнение фильтров
@@ -39,37 +39,33 @@ legend(hndls(2),'butterworth');
 legend(hndls(3),'chebyshev');
 %% Работа №4 Частотно-временной анализ
 % Формирование последовательности отсчетов
-n_chips = 16;
-s_c = generate_sequence('chirp', t_d, n_chips, t_impulse, f_carrier);   % ЛЧМ импульс
+n_chips = 8;
+s_c = generate_sequence('chirp', t_d, n_chips, t_impulse, f_carrier, f_mod);   % ЛЧМ импульс
 s_r = generate_sequence('radio', t_d, n_chips, t_impulse, f_carrier);   % р/импульс
-s_am = generate_sequence('AM', t_d, n_chips, t_impulse, f_carrier);     % АМ сигнал
+s_am = generate_sequence('AM', t_d, n_chips, t_impulse, f_carrier, f_mod);     % АМ сигнал
 plot_signal(t_d,[s_c;s_r;s_am])
 
 %% Отображение последовательности ЛЧМ импульсов
 figure('Name', 'СПГ ЛЧМ','WindowStyle','docked','Color','white')
-subplot(3,1,1); spectrogram(s_c,4,'yaxis');         % спектрограмма (короткое окно)
-subplot(3,1,2); spectrogram(s_c,64,63,'yaxis');     % спектрограмма (длинное окно, короткий шаг)
-subplot(3,1,3); spectrogram(s_c,64,0,'yaxis');      % спектрограмма (длинное окно)
+subplot(3,1,1); spectrogram(s_c,6,2,'yaxis');       % спектрограмма (короткое окно)
+subplot(3,1,2); spectrogram(s_c,100,80,'yaxis');    % спектрограмма (длинное окно, короткий шаг)
+subplot(3,1,3); spectrogram(s_c,100,0,'yaxis');     % спектрограмма (длинное окно)
 figure('Name', 'Вейв. ЛЧМ','WindowStyle','docked','Color','white')
 cwt(s_c,f_d,'amor');
 
 %% Отображение последовательности радиоимпульсов
 figure('Name', 'СПГ Р.имп.','WindowStyle','docked','Color','white')
-window_length = uint32(length(s_r)/n_chips);
-window_overlap = 10;
-n_fft=1024;
-subplot(3,1,1); spectrogram(s_r,4,0,n_fft,'yaxis');         % спектрограмма (короткое окно)
-subplot(3,1,2); spectrogram(s_r,window_length,window_overlap,n_fft,'yaxis'); % спектрограмма (длинное окно, короткий шаг)
-subplot(3,1,3); spectrogram(s_r,window_length,0,n_fft,'yaxis');    % спектрограмма (длинное окно)
+subplot(3,1,1); spectrogram(s_r,6,2,n_fft,'yaxis');     % спектрограмма (короткое окно)
+subplot(3,1,2); spectrogram(s_r,400,390,400,'yaxis');   % спектрограмма (длинное окно, короткий шаг)
+subplot(3,1,3); spectrogram(s_r,400,0,400,'yaxis');     % спектрограмма (длинное окно)
 figure('Name', 'Вейв. Р.имп','WindowStyle','docked','Color','white')
 cwt(s_r,f_d,'amor');
 
 %% Отображение последовательности АМ чипов
 figure('Name', 'СПГ АМ чип','WindowStyle','docked','Color','white')
-window_length = uint32(length(s_am)/n_chips);
-subplot(3,1,1); spectrogram(s_am,4,0,'yaxis');         % спектрограмма (короткое окно)
-subplot(3,1,2); spectrogram(s_am,window_length,window_length-1,'yaxis'); % спектрограмма (длинное окно, короткий шаг)
-subplot(3,1,3); spectrogram(s_am,window_length,0,'yaxis');    % спектрограмма (длинное окно)
+subplot(3,1,1); spectrogram(s_am,6,2,'yaxis');      % спектрограмма (короткое окно)
+subplot(3,1,2); spectrogram(s_am,400,80,'yaxis');   % спектрограмма (длинное окно, короткий шаг)
+subplot(3,1,3); spectrogram(s_am,400,0,'yaxis');    % спектрограмма (длинное окно)
 figure('Name', 'Вейв. АМ чип','WindowStyle','docked','Color','white')
 cwt(s_am,f_d);
 
@@ -88,7 +84,7 @@ function signal = generate_single_chip(type,varargin)
     end
 end
 % Формирование последовательности чипов
-function signal = generate_sequence(type,t_d, n_chips, t_imp, f_low)
+function signal = generate_sequence(type,t_d, n_chips, t_imp, f_low, varargin)
 %Ф-я формирования набора последовательности сигналов перестраиваемых по
 %частоте
 % Аргументы:
@@ -97,18 +93,19 @@ function signal = generate_sequence(type,t_d, n_chips, t_imp, f_low)
 %   n_chips - число импульсов
 %   t_imp - длительность одного импульса
 %   f_low - нижняя частота
+% Дополнительные аргументы:
+%   zастота модуляции
     switch type     % запустить функцию формирования сигнала в зависимости от заданного типа
         case 'chirp'    % тип в/импульс
-            f_mod = f_low/5;
-            get_chip = @(i) get_chirp_pulse(t_d, t_imp, t_imp*0.96, f_low, f_mod);
+            f_mod =  varargin{1};
+            get_chip = @(i) get_chirp_pulse(t_d, t_imp, t_imp, f_low, f_mod);
         case 'radio'    % тип р/импульс
             random_freq = f_low + randi(5,1,n_chips).*8/t_imp;       % случайная перестройка для р/импульса
-            get_chip = @(i) get_radio_pulse(t_d, t_imp, t_imp*0.96, random_freq(i));
+            get_chip = @(i) get_radio_pulse(t_d, t_imp, t_imp, random_freq(i));
         case 'AM'       % тип АМ сигнал
-            f_mod = f_low/10;   % приравнять частоту модуляции 1/10 частоте несущей
+            f_mod = varargin{1};   % приравнять частоту модуляции 1/10 частоте несущей
             random_freq = f_low + (3*f_mod)*randi(5,1,n_chips);    % формирование случайных частот
             get_chip = @(i) get_AM(t_d, t_imp, random_freq(i), f_mod, 0.5); 
-
     end
     n_cnts_signal = floor(t_imp/t_d);
     signal = zeros(n_cnts_signal, n_chips);
@@ -116,6 +113,7 @@ function signal = generate_sequence(type,t_d, n_chips, t_imp, f_low)
     for i_chip = 1:n_chips
         signal(:,i_chip)=get_chip(i_chip);
     end
+    signal(end-8:end,:)=0;
     signal = signal(:).';
 end
 % Отображение сигналов
