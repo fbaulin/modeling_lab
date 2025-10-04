@@ -185,6 +185,11 @@ def pdf_panel(labels, signals, bins=None, ideal_pdf_w=None, ideal_pdf_x=None, fi
 
 Библиотечная функция, используемая для формирования равномерной СВ 
 np.random.uniform или scipy.stats.uniform.
+Примеры использования функции построения графиков
+Один процесс
+>>> signal_pdf_panel('Процесс X', x ,ideal_pdf_w=uniform_ideal_w, ideal_pdf_x=uniform_ideal_x)
+Два процесса
+>>> signal_pdf_panel(['Процесс X', 'Процесс Y'], [x, y] ,ideal_pdf_w=uniform_ideal_w, ideal_pdf_x=uniform_ideal_x)
 """
 n_values=1000
 
